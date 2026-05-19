@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>WhatsApp</title>
+<style>
+  :root {
+    --wa-bg: #0b141a;
+    --wa-header: #202c33;
+    --wa-incoming: #202c33;
+    --wa-outgoing: #005c4b;
+    --wa-text: #e9edef;
+    --wa-text-muted: #8696a0;
+    --wa-input: #2a3942;
+    --wa-accent: #00a884;
+    --wa-divider: rgba(134, 150, 160, 0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: #000;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--wa-text);
+    overflow: hidden;
+  }
+
+  .phone {
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0 auto;
+    background: var(--wa-bg);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header {
+    background: var(--wa-header);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--wa-divider);
+  }
+
+  .back-arrow {
+    color: var(--wa-text);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+    opacity: 0.9;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00a884 0%, #008069 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 18px;
+    color: #fff;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .header-info { flex: 1; min-width: 0; }
+  .header-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--wa-text);
+    line-height: 1.2;
+  }
+  .header-status {
+    font-size: 12px;
+    color: var(--wa-text-muted);
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--wa-accent);
+  }
+
+  .header-icons {
+    display: flex;
+    gap: 18px;
+    color: var(--wa-text);
+    opacity: 0.85;
+  }
+  .header-icons svg { cursor: pointer; }
+
+  .mode-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--wa-text-muted);
+    font-size: 10.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    z-index: 20;
+    border: 1px solid rgba(255,255,255,0.08);
+    letter-spacing: 0.3px;
+    pointer-events: none;
+  }
+
+  .chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 8px;
+    background-color: var(--wa-bg);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><g fill='none' stroke='%23182229' stroke-width='1.2' opacity='0.55'><circle cx='40' cy='40' r='14'/><path d='M90 30 l10 10 l-10 10 l-10 -10 z'/><path d='M150 50 q15 -20 30 0'/><circle cx='220' cy='40' r='4' fill='%23182229'/><path d='M270 25 l20 0 l0 20 l-20 0 z'/><path d='M330 40 l15 -15 l15 15 l-15 15 z'/><circle cx='60' cy='110' r='10'/><path d='M120 110 q20 -15 40 0 q-20 15 -40 0 z' fill='%23182229'/><path d='M200 100 l25 0 l-12 18 z' fill='%23182229'/><circle cx='270' cy='115' r='6'/><path d='M320 100 q10 10 0 20 q-10 -10 0 -20'/><path d='M40 180 l12 -12 l12 12 l-12 12 z'/><circle cx='110' cy='180' r='8' fill='%23182229'/><path d='M170 170 q15 5 25 20'/><path d='M230 180 q-10 -10 0 -20 q10 10 0 20'/><circle cx='290' cy='180' r='5'/><path d='M340 165 l15 15 l-15 15 l-15 -15 z' fill='%23182229'/><circle cx='50' cy='260' r='12'/><path d='M110 245 l20 20 l-20 20 z' fill='%23182229'/><path d='M170 260 q10 -15 25 0 q-10 15 -25 0'/><circle cx='240' cy='255' r='7' fill='%23182229'/><path d='M290 245 l0 25 l25 0'/><path d='M40 330 q15 -10 30 0'/><circle cx='115' cy='335' r='10' fill='%23182229'/><path d='M170 320 l20 5 l-5 20 z'/><circle cx='240' cy='330' r='4'/><path d='M290 325 l15 0 l0 15 l-15 0 z' fill='%23182229'/><path d='M340 320 q-10 15 10 20'/></g></svg>");
+    background-repeat: repeat;
+    background-size: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .chat::-webkit-scrollbar { width: 6px; }
+  .chat::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+  .system-notice {
+    background: rgba(28, 56, 73, 0.7);
+    color: #fcd34d;
+    text-align: center;
+    font-size: 12.5px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    margin: 10px auto 14px;
+    max-width: 90%;
+    line-height: 1.4;
+    box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+  }
+
+  .date-divider {
+    text-align: center;
+    margin: 8px auto 12px;
+  }
+  .date-divider span {
+    background: rgba(28, 56, 73, 0.7);
+    color: var(--wa-text-muted);
+    font-size: 12.5px;
+    padding: 5px 12px;
+    border-radius: 8px;
+  }
+
+  .message {
+    max-width: 78%;
+    padding: 6px 9px 8px;
+    margin: 1px 6px;
+    border-radius: 8px;
+    position: relative;
+    font-size: 14.5px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+    animation: pop 0.18s ease-out;
+  }
+
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(4px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .message.incoming {
+    background: var(--wa-incoming);
+    align-self: flex-start;
+    border-top-right-radius: 0;
+    margin-right: 12px;
+  }
+  .message.incoming::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -8px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-top-color: var(--wa-incoming);
+    border-right: 0;
+  }
+
+  .message.outgoing {
+    background: var(--wa-outgoing);
+    align-self: flex-end;
+    border-top-left-radius: 0;
+    margin-left: 12px;
+  }
+  .message.outgoing::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-top-color: var(--wa-outgoing);
+    border-left: 0;
+  }
+
+  .message-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    float: left;
+    margin: 4px -2px -4px 6px;
+    font-size: 11px;
+    color: var(--wa-text-muted);
+  }
+  .message.outgoing .meta { color: rgba(233, 237, 239, 0.6); }
+  .check {
+    color: #53bdeb;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: -3px;
+  }
+
+  .typing {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 14px;
+  }
+  .typing span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--wa-text-muted);
+    animation: bounce 1.2s infinite;
+  }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-5px); opacity: 1; }
+  }
+
+  .input-bar {
+    background: var(--wa-header);
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .input-icon {
+    color: var(--wa-text-muted);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  .input-wrap {
+    flex: 1;
+    background: var(--wa-input);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 8px;
+    min-height: 40px;
+  }
+
+  .input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--wa-text);
+    font-size: 15px;
+    font-family: inherit;
+    resize: none;
+    max-height: 100px;
+    line-height: 1.4;
+    padding: 4px 0;
+  }
+  .input::placeholder { color: var(--wa-text-muted); }
+
+  .send-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--wa-accent);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.12s ease, background 0.2s ease;
+  }
+  .send-btn:active { transform: scale(0.92); }
+  .send-btn:disabled {
+    background: var(--wa-input);
+    color: var(--wa-text-muted);
+    cursor: default;
+  }
+
+  @media (min-width: 481px) {
+    body {
+      background: #111b21;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .phone {
+      height: 92vh;
+      max-height: 900px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <div class="mode-badge" id="mode-badge"></div>
+
+  <header class="header">
+    <span class="back-arrow">‹</span>
+    <div class="avatar" id="avatar">S</div>
+    <div class="header-info">
+      <div class="header-name" id="biz-name">העסק שלך</div>
+      <div class="header-status"><span class="status-dot"></span><span>פעיל עכשיו</span></div>
+    </div>
+    <div class="header-icons">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+      <svg width="6" height="22" viewBox="0 0 6 22" fill="currentColor"><circle cx="3" cy="3" r="2"/><circle cx="3" cy="11" r="2"/><circle cx="3" cy="19" r="2"/></svg>
+    </div>
+  </header>
+
+  <main class="chat" id="chat">
+    <div class="system-notice">🔒 הודעות בצ׳אט זה מוצפנות מקצה לקצה. רק את/ה והעסק יכולים לראות אותן.</div>
+    <div class="date-divider"><span>היום</span></div>
+  </main>
+
+  <div class="input-bar">
+    <span class="input-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="10" r="1.5"/><circle cx="15.5" cy="10" r="1.5"/><path d="M7.5 14c1 1.5 2.5 2.5 4.5 2.5s3.5-1 4.5-2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </span>
+    <div class="input-wrap">
+      <textarea id="input" class="input" placeholder="הקלדת הודעה" rows="1"></textarea>
+      <span class="input-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg>
+      </span>
+    </div>
+    <button class="send-btn" id="send" aria-label="שלח">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+
+</div>
+
+<script>
+  /* ============================================================
+     CONFIG — edit defaults, or override at runtime via URL params:
+       ?biz=Name&letter=N&type=מסעדה&intro=Welcome
+       &mode=agent|chatbot&prompt=Custom+context
+       &debug=1   (shows mode badge top-left, useful in demos)
+     ============================================================ */
+  const CONFIG = {
+    // Display
+    businessName: "העסק שלך",
+    avatarLetter: "S",
+    avatarImage: null,
+    businessType: "עסק קטן",
+    introMessage: "היי! איך אפשר לעזור היום?",
+
+    // Mode: "agent" (Claude + memory) or "chatbot" (rule-based FAQ)
+    mode: "agent",
+
+    // Backend — paste your n8n Production webhook URL here
+    webhookUrl: "",
+
+    // Optional: extra context appended to the AI's system prompt
+    // e.g. "Our specialty is wood-fired Neapolitan pizza. We deliver until 23:00."
+    systemPrompt: "",
+
+    // Optional: override the rule-based chatbot's FAQs
+    // Array of { keywords: [...], answer: "..." }
+    faqs: [],
+
+    // Show mode badge in top-left (helpful when toggling for demos)
+    debug: false,
+
+    // Fallback replies when webhookUrl is empty
+    demoReplies: [
+      "תודה על הפנייה! אני סוכן ה-AI של העסק.",
+      "אני יכול לענות על שאלות, לתאם פגישות, ולסנן לידים, 24/7.",
+      "(הדמו הזה רץ במצב מקומי בלי backend, פשוט להראות את ה-UI)"
+    ]
+  };
+
+  /* ============================================================ */
+
+  const params = new URLSearchParams(location.search);
+  if (params.get("biz")) CONFIG.businessName = params.get("biz");
+  if (params.get("letter")) CONFIG.avatarLetter = params.get("letter");
+  if (params.get("type")) CONFIG.businessType = params.get("type");
+  if (params.get("intro")) CONFIG.introMessage = params.get("intro");
+  if (params.get("mode")) CONFIG.mode = params.get("mode");
+  if (params.get("webhook")) CONFIG.webhookUrl = params.get("webhook");
+  if (params.get("prompt")) CONFIG.systemPrompt = params.get("prompt");
+  if (params.get("debug")) CONFIG.debug = params.get("debug") === "1";
+
+  document.getElementById("biz-name").textContent = CONFIG.businessName;
+  const avatarEl = document.getElementById("avatar");
+  if (CONFIG.avatarImage) {
+    avatarEl.innerHTML = `<img src="${CONFIG.avatarImage}" alt="">`;
+  } else {
+    avatarEl.textContent = CONFIG.avatarLetter;
+  }
+  document.title = CONFIG.businessName;
+
+  const modeBadge = document.getElementById("mode-badge");
+  if (CONFIG.debug) {
+    modeBadge.textContent = CONFIG.mode === "chatbot" ? "MODE: BASIC CHATBOT" : "MODE: AI AGENT";
+    modeBadge.style.display = "block";
+  } else {
+    modeBadge.style.display = "none";
+  }
+
+  const sessionId = "s_" + Math.random().toString(36).slice(2, 11);
+  let demoIndex = 0;
+  const chatEl = document.getElementById("chat");
+  const inputEl = document.getElementById("input");
+  const sendBtn = document.getElementById("send");
+
+  inputEl.addEventListener("input", () => {
+    inputEl.style.height = "auto";
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 100) + "px";
+  });
+
+  function timeNow() {
+    const d = new Date();
+    return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+  }
+
+  function addMessage(text, type) {
+    const msg = document.createElement("div");
+    msg.className = "message " + type;
+    const textEl = document.createElement("span");
+    textEl.className = "message-text";
+    textEl.textContent = text;
+    const meta = document.createElement("span");
+    meta.className = "meta";
+    meta.innerHTML = timeNow() + (type === "outgoing" ? ' <span class="check">✓✓</span>' : "");
+    msg.appendChild(textEl);
+    msg.appendChild(meta);
+    chatEl.appendChild(msg);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return msg;
+  }
+
+  function showTyping() {
+    const wrap = document.createElement("div");
+    wrap.className = "message incoming";
+    wrap.style.padding = "4px 8px";
+    wrap.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+    chatEl.appendChild(wrap);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return wrap;
+  }
+
+  async function getReply(userMessage) {
+    if (!CONFIG.webhookUrl) {
+      await new Promise(r => setTimeout(r, 900 + Math.random() * 700));
+      const reply = CONFIG.demoReplies[demoIndex % CONFIG.demoReplies.length];
+      demoIndex++;
+      return reply;
+    }
+
+    try {
+      const res = await fetch(CONFIG.webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId,
+          message: userMessage,
+          mode: CONFIG.mode,
+          businessName: CONFIG.businessName,
+          businessType: CONFIG.businessType,
+          systemPrompt: CONFIG.systemPrompt,
+          faqs: CONFIG.faqs
+        })
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      return data.reply || data.output || data.message || "[no reply field in response]";
+    } catch (err) {
+      console.error("Webhook error:", err);
+      return "מצטערים, יש כרגע בעיה בחיבור. נסה שוב בעוד רגע.";
+    }
+  }
+
+  async function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text) return;
+    addMessage(text, "outgoing");
+    inputEl.value = "";
+    inputEl.style.height = "auto";
+    sendBtn.disabled = true;
+    const typing = showTyping();
+    const reply = await getReply(text);
+    typing.remove();
+    addMessage(reply, "incoming");
+    sendBtn.disabled = false;
+    inputEl.focus();
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+  inputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  setTimeout(() => {
+    addMessage(CONFIG.introMessage, "incoming");
+  }, 500);
+</script>
+
+</body>
+</html>
